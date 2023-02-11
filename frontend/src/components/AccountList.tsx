@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from "./Header";
 import '../App.css';
 
 interface Fruit {
@@ -25,18 +26,25 @@ const App = () => {
     fetchData();
   }, []);
 
-  return (
-    <div className="container fruitsList">
-      <h1>アカウント情報</h1>
+  const Item = (props: any) => {
+    return (
+      <div className="text">
+        <h2>{props.name}</h2>
+      </div>
+    );
+  };
 
-      {userDatas?.map((fruit: Fruit) => (
-        <div key={fruit.id}>
-          <div className="text">
-            <h2>{fruit.name}</h2>
-          </div>
-        </div>
-      ))}
-    </div>
+  return (
+    <>
+      <Header />
+      <div className="container fruitsList">
+        <h1>アカウント情報</h1>
+
+        {userDatas?.map((fruit: Fruit, index) => {
+          return <Item key={index} name={fruit.name} ></Item>;
+        })}
+      </div>
+    </>
   );
 };
 
