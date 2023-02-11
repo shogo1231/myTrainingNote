@@ -1,0 +1,11 @@
+.fc .fc-toolbar-title {
+  font-size: clamp(1em, 3vw, 1.75em);
+}
+
+.fc .fc-button {
+  font-size: clamp(0.8em, 3vw, 1em);
+}
+
+.fc table thead .fc-col-header-cell-cushion {
+  font-size: clamp(0.8em, 3vw, 1em);
+}
