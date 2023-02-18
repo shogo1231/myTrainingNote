@@ -9,3 +9,12 @@
 .fc table thead .fc-col-header-cell-cushion {
   font-size: clamp(0.8em, 3vw, 1em);
 }
+
+.flex {
+  display: flex;
+}
+
+.trainingName {
+  color: #272727;
+  padding: 2px 0 0 5px;
+}

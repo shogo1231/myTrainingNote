@@ -1,12 +1,19 @@
 import express from 'express';
 import {GetStaffData} from './userData';
+import * as training from './training';
 
 const app: express.Express = express();
-const port = 8000;
+const port = 8001;
 
 app.get('/api/getUser', async (req: express.Request, res: express.Response) => {
   const getUserData = await GetStaffData();
   res.status(200).send(getUserData);
+});
+
+app.get('/api/getTrainingLog', async (req: express.Request, res: express.Response) => {
+  const targetDate = req.query.date;
+  const getTrainingLogData = await training.getTrainingLogData(targetDate);
+  res.status(200).send(getTrainingLogData);
 });
 
 app.listen(port, () => {

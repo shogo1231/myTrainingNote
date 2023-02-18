@@ -6,7 +6,8 @@ export async function dbSetting () {
     user : 'root',
     password : 'root',
     port : 3306,
-    database : 'hoge-db'
+    database : 'hoge-db',
+    // namedPlaceholders: true,
   };
 
   const connection = await mysql.createConnection(db_setting);
