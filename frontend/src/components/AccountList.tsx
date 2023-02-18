@@ -51,9 +51,9 @@ const TrainingItem = (props: Training) => {
             <div className="trainingName">{props.items.trainingEvents_name}</div>
           </div>
           <div className="flex">
-            <div>{totalSetcount(props.items)}</div> {/* 種目ごとのセット数を計算して表示 */}
-            <div>{totalVolume(props.items)}</div> {/* 種目ごとのボリューム数を計算して表示 */}
-            <div>{maxRM(props.items)}</div> {/* 種目ごとの推定1RM数を計算して表示 */}
+            <div>{props.items.totalSetCount}セット  /</div> {/* 種目ごとのセット数を計算して表示 */}
+            <div>{props.items.totalWeight}kg  /</div> {/* 種目ごとのボリューム数を計算して表示 */}
+            <div>推定1RM {props.items.repetitionMaximum}kg</div> {/* 種目ごとの推定1RM数を計算して表示 */}
           </div>
         </TestItem>
       </Stack>
@@ -82,18 +82,6 @@ function selectBodyPartsIcon(bodyPartsCode: number) {
     default:
       return '';
   }
-}
-
-function totalSetcount(val: any) {
-  return 'トータルセット数';
-}
-
-function totalVolume(val: any) {
-  return 'トータルボリューム';
-}
-
-function maxRM(val: any) {
-  return '推定1RM';
 }
 
 const App = () => {
