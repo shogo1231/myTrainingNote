@@ -1,5 +1,6 @@
 import { dbSetting } from './mysqlConfig'
 import dayjs from 'dayjs';
+import * as big from './bigjs'
 
 interface calcRMDatas {
   weight: number
@@ -81,21 +82,21 @@ export async function getTrainingLogData (_targetDate:any) {
  * 詳細に出したい種目があれば分岐を追加していけばよい。
  */
 function calcRepetitionMaximum (calcRMDatas: calcRMDatas, eventName: string) {
-
   let result: number = 0;
   const maxWeight = calcRMDatas.weight;
   const maxCount = calcRMDatas.count;
   switch (eventName) {
     case 'ベンチプレス':
-      result = maxWeight * maxCount / 40 + maxWeight;
+      result = big.add(big.div(big.times(maxWeight, maxCount), 40), maxWeight);
       break;
     case 'スクワット':
     case 'デッドリフト':
-      result = maxWeight * 5 / 33.3 + maxWeight;
+      result = big.add(big.div(big.times(maxWeight, maxCount), 33.3), maxWeight);
       break;
     default: //　オコナ―式
-      result = maxWeight * (1 + maxCount / 40);
+      result = big.times(maxWeight, (big.add(1, big.div(maxCount, 40))));
       break;
   }
+  result = big.trunc(result, 3);
   return result;
 }
