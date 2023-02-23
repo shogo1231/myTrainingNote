@@ -2,6 +2,12 @@ import { dbSetting } from './mysqlConfig'
 import dayjs from 'dayjs';
 import * as big from './bigjs'
 
+interface Obj {
+  [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
+  [prop: number]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
+}
+// const rowItem: Obj = {// 初期化するときにそのObjという型で宣言してあげることで、どんなプロパティでも持てる型になる
+// }
 interface calcRMDatas {
   weight: number
   count: number
@@ -11,13 +17,6 @@ interface calcRMDatas {
  * 対象日付のトレーニング履歴を取得
  */
 export async function getTrainingLogData (_targetDate:any) {
-  interface Obj {
-    [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
-    [prop: number]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
-  }
-  // const rowItem: Obj = {// 初期化するときにそのObjという型で宣言してあげることで、どんなプロパティでも持てる型になる
-  // }
-
   try {
     // DB接続
     const connection = await dbSetting();
@@ -38,38 +37,99 @@ export async function getTrainingLogData (_targetDate:any) {
 
     let rowItems: any = rows[0];
     rowItems.forEach((rowItem: Obj) => {
-      let totalSetCount = 0;
-      let totalWeight = 0;
-      let totalVolume = 0;
-      let maxWeightAndCount: calcRMDatas = { weight: 0, count: 0};
-
-      for (const [key, value] of Object.entries(rowItem)) {
-        if (key.match(/^weight/)) {
-          totalSetCount = value !== 0 ? totalSetCount + 1 : totalSetCount;
-
-          let arrKey = key.split('_');
-          let targetNum = arrKey[1];
-          let targetPlaycount = `playcount_${targetNum}`;
-          totalVolume = value * rowItem[targetPlaycount];
-          totalWeight += totalVolume;
-
-          if (value > maxWeightAndCount.weight) {
-            maxWeightAndCount.weight = value;
-            maxWeightAndCount.count = rowItem[targetPlaycount];
-          }
-        }
-      }
-      rowItem.totalWeight = totalWeight;
-      rowItem.totalSetCount = totalSetCount;
-
-      const repetitionMaximum = calcRepetitionMaximum(maxWeightAndCount, rowItem.trainingEvents_name);
-      rowItem.repetitionMaximum = repetitionMaximum;
+      const culcResult = cultMultipleTotalVal(rowItem);
+      rowItem.totalWeight = culcResult.totalWeight;
+      rowItem.totalSetCount = culcResult.totalSetCount;
+      rowItem.repetitionMaximum = culcResult.repetitionMaximum;
     });
 
     return rowItems;
   }
   catch (err: any) {
     throw new Error(err)
+  }
+}
+
+interface queryParam {
+  date: Date,
+  bodyCode: string,
+  eventCode: string,
+}
+
+/**
+ * 種目ごとのトレーニング履歴を取得（日付単位）
+ */
+export async function getTrainingLogDetail (queryParam: queryParam) {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+
+    const searchDate = dayjs(new Date(queryParam.date)).format('YYYY-MM-DD HH:mm:ss');
+    const query = `
+      SELECT log.*, event.*, body.*
+      FROM trainingLogs AS log
+      LEFT JOIN trainingEvents AS event
+        ON log.event_code = event.trainingEvents_code
+      LEFT JOIN bodyParts AS body
+        ON log.body_code = body.bodyParts_code
+      where log.execute_date like ?
+        AND log.body_code = ?
+        AND log.event_code = ?;`
+    const param = [searchDate, Number(queryParam.bodyCode), Number(queryParam.eventCode)];
+    const rows = await connection.execute(query, param);
+    const rowItem: any = rows[0];
+
+    // 上記クエリよりroeItemは1データしかない前提でボリュームと1RMを計算しクライアントに返す
+    let editRowItem: Obj =  rowItem[0];
+    // 返り値の合計セット数は使用しない想定
+    const culcResult = cultMultipleTotalVal(editRowItem);
+    editRowItem.totalWeight = culcResult.totalWeight;
+    editRowItem.repetitionMaximum = culcResult.repetitionMaximum;
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+
+/**
+ * 合計重量、合計セット数、推定1RMの計算
+ * @param editRowItem
+ */
+function cultMultipleTotalVal(editRowItem: Obj) {
+  let totalSetCount = 0;
+  let totalWeight = 0;
+  let totalVolume = 0;
+  let maxWeightAndCount: calcRMDatas = { weight: 0, count: 0};
+
+  for (const[key, value] of Object.entries(editRowItem)) {
+    if (key.match(/^weight/)) {
+      totalSetCount = value !== 0 ? totalSetCount + 1 : totalSetCount;
+
+      let arrKey = key.split('_');
+      let targetNum = arrKey[1];
+      let targetPlaycount = `playcount_${targetNum}`;
+      totalVolume = value * editRowItem[targetPlaycount];
+      totalWeight += totalVolume;
+
+      if (value > maxWeightAndCount.weight) {
+        maxWeightAndCount.weight = value;
+        maxWeightAndCount.count = editRowItem[targetPlaycount];
+      }
+    }
+  }
+
+  editRowItem.totalWeight = totalWeight;
+  editRowItem.totalSetCount = totalSetCount;
+
+  const repetitionMaximum = calcRepetitionMaximum(maxWeightAndCount, editRowItem.trainingEvents_name);
+  editRowItem.repetitionMaximum = repetitionMaximum;
+
+  return {
+    totalWeight: editRowItem.totalWeight,
+    totalSetCount: editRowItem.totalSetCount,
+    repetitionMaximum: editRowItem.repetitionMaximum,
   }
 }
 

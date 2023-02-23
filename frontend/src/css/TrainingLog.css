@@ -1,0 +1,32 @@
+.tableCell-basic {
+  text-align: right !important;
+  border-left:1px solid #e0e0e0 !important;
+  border-right:1px solid #e0e0e0 !important;
+  width: 50px;
+}
+
+.tableCell-sideHeader {
+  padding: 14px !important;
+  width: 80px;
+}
+
+.table-Border {
+  border-bottom:1px solid #e0e0e0 !important;
+}
+
+.tableCell-Width {
+  width: 50px;
+}
+
+.trainingLogHeader,
+.trainingLogTotal {
+  padding: 10px;
+}
+
+.trainingDate {
+  font-size: 20px;
+}
+
+.trainingEventName {
+
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from "./Header";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -42,8 +43,14 @@ const TestItem = styled(Paper)(({ theme }) => ({
 }));
 
 const TrainingItem = (props: Training) => {
+  const navigate = useNavigate();
+  let setStateVal = {
+    'date': props.items.execute_date,
+    'bodyCode': props.items.body_code,
+    'eventCode': props.items.event_code,
+  };
   return (
-    <div className="trainingList" >
+    <div className="trainingList" onClick={() => navigate('/Log', {state: setStateVal})}>
       <Stack spacing={2}>
         <TestItem>
           <div className="flex">
@@ -52,7 +59,7 @@ const TrainingItem = (props: Training) => {
           </div>
           <div className="flex">
             <div>{props.items.totalSetCount}セット  /</div> {/* 種目ごとのセット数を計算して表示 */}
-            <div>{props.items.totalWeight}kg  /</div> {/* 種目ごとのボリューム数を計算して表示 */}
+            <div>ボリューム {props.items.totalWeight}kg  /</div> {/* 種目ごとのボリューム数を計算して表示 */}
             <div>推定1RM {props.items.repetitionMaximum}kg</div> {/* 種目ごとの推定1RM数を計算して表示 */}
           </div>
         </TestItem>
