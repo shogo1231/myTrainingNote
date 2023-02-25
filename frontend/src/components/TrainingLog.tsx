@@ -10,7 +10,6 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
@@ -66,26 +65,22 @@ const TrainingDetail = (props: Training) => {
       </div>
       {/* tebleのwidthがデフォルト状態で画面幅に応じて余分な余白ができているので今後改修予定する */}
       <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 950 }}>
+      <Table id="test" sx={{ minWidth: 950 }}>
         {trainingLogs.map((logObject) => (
         <>
-        <TableHead className="table-Border" sx={{ width: 300 }}>
-          <TableRow >
-            <TableBody>
-              <TableRow
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          <TableBody className="table-Border" sx={{ width: 300 }}>
+            <TableRow
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+            {Object.values(logObject).map((logVal: any, index: number) => (
+              <TableCell
+                className ={index !== 0 ? "tableCell-basic" : 'tableCell-sideHeader'}
               >
-              {Object.values(logObject).map((logVal: any, index: number) => (
-                <TableCell
-                  className ={index !== 0 ? "tableCell-basic" : 'tableCell-sideHeader'}
-                >
-                  {logVal !== 0 ? logVal : ''}
-                </TableCell>
-              ))}
-              </TableRow>
-            </TableBody>
-          </TableRow>
-        </TableHead>
+                {logVal !== 0 ? logVal : ''}
+              </TableCell>
+            ))}
+            </TableRow>
+          </TableBody>
         </>
         ))}
       </Table>
