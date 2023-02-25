@@ -69,7 +69,7 @@ const DispEventList = (props: any) => {
       aria-labelledby="nested-list-subheader"
     >
     {trainingEventLists.map((trainingData: any, index: number) => {
-      return <DistEventList data={trainingData.trainingEvents_name} />
+      return <DistEventList data={trainingData.trainingEvents_name} key={trainingData.trainingEvents_code}/>
     })}
     </List>
   );
@@ -111,6 +111,7 @@ const App = () => {
         <DispEventList
           item={trainingDetailData}
           bodyValue={selectBodyValue}
+          key={trainingDetailData.event_code}
         />
       </div>
     </>
