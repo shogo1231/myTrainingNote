@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom"
 import Header from "./Header";
 import '../App.css';
 import '../SelectEvent.css';
@@ -48,16 +49,24 @@ const SelectEvents = (props: Training) => {
   )
 }
 
-const DistEventList = (props: any) => {
+const DispEventListDetail = (props: Obj) => {
+  const navigate = useNavigate();
+  let setStateVal = {
+    'bodyCode': props.data.body_code,
+    'eventCode': props.data.trainingEvents_code,
+    'eventName': props.data.trainingEvents_name,
+  };
+
   return (
     <>
-      <ListItemButton>
-        <ListItemText primary={props.data} />
+      <ListItemButton onClick={() => navigate('/register', {state: setStateVal})}>
+        <ListItemText primary={props.data.trainingEvents_name} />
       </ListItemButton>
       <Divider />
     </>
   );
 }
+
 const DispEventList = (props: any) => {
   let trainingEventLists = props.item.filter((eventItem: Obj) => {
     return eventItem.body_code === props.bodyValue;
@@ -69,7 +78,7 @@ const DispEventList = (props: any) => {
       aria-labelledby="nested-list-subheader"
     >
     {trainingEventLists.map((trainingData: any, index: number) => {
-      return <DistEventList data={trainingData.trainingEvents_name} key={trainingData.trainingEvents_code}/>
+      return <DispEventListDetail data={trainingData} key={trainingData.trainingEvents_code}/>
     })}
     </List>
   );

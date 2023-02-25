@@ -5,6 +5,10 @@
   width: 50px;
 }
 
+.tableCell-input {
+  padding: 8px 2px 4px 2px !important;
+}
+
 .tableCell-sideHeader {
   padding: 14px !important;
   width: 80px;
@@ -23,10 +27,10 @@
   padding: 10px;
 }
 
-.trainingDate {
-  font-size: 20px;
+.trainingLogMemo {
+  padding: 15px;
 }
 
-.trainingEventName {
-
+.trainingDate {
+  font-size: 20px;
 }
