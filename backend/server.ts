@@ -22,6 +22,11 @@ app.get('/api/getTrainingLogDetail', async (req: express.Request, res: express.R
   res.status(200).send(getTrainingLogDetailData);
 });
 
+app.get('/api/getAllEventItems', async (req: express.Request, res: express.Response) => {
+  const getAllEventItems = await training.getAllEventItems();
+  res.status(200).send(getAllEventItems);
+});
+
 app.listen(port, () => {
   console.log(`port ${port} でサーバ起動中`);
 });

@@ -94,6 +94,25 @@ export async function getTrainingLogDetail (queryParam: queryParam) {
 }
 
 /**
+ * すべてのトレーニング種目を取得
+ */
+export async function getAllEventItems () {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+    const query = 'SELECT * FROM trainingEvents ORDER BY body_code';
+
+    const rows = await connection.execute(query);
+    const rowItem: any = rows[0];
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+
+/**
  * 合計重量、合計セット数、推定1RMの計算
  * @param editRowItem
  */

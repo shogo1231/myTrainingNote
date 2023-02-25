@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -53,10 +54,10 @@ const list = () => (
 
 export default function Header() {
   const [state, setState] = React.useState(false);
+  const toggleDrawer = () => { setState(!state); };
 
-  const toggleDrawer = () => {
-      setState(!state);
-  };
+  const navigate = useNavigate();
+  let setStateVal = {};
 
   return (
     <>
@@ -84,7 +85,7 @@ export default function Header() {
               text-arign= "light"
               sx={{ mr: 2 }}
               style={{ margin: 0 }}
-              // onClick={() => {alert('ok')}}
+              onClick={() => navigate('/selectEvent', {state: setStateVal})}
             >
               <AddIcon/>
             </IconButton>
