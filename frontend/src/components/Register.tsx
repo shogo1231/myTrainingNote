@@ -13,6 +13,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 interface Obj {
   [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
@@ -23,9 +24,106 @@ interface Obj {
 // メモ：モジュール化して各ページでべた書きしないようにする
 dayjs.locale(ja);
 
+const registerData = (state: any) => {
+  // material-UIのtableの各セルの値を取得する処理　現状不要だが備忘として残しておく
+  // let test: HTMLTableElement = document.getElementById('test') as HTMLTableElement;
+
+  // if (test !== null) {
+  //   // rowsやcellsはArrayLikeですがIterableではないのでArray.formで配列にするとfor ofを使えます。
+  //   for (let row of Array.from(test.rows)) {
+  //     for (let cell of Array.from(row.cells)) {
+  //       console.log(cell);
+  //         // cell.textContent = 'test';
+  //     }
+  //   }
+  // }
+
+  console.log(state);
+}
+
+const editTrainingLogs = (event: any, eventName: string, statement: Obj) => {
+  const splitEventName = eventName.split('_');
+  statement.forEach((stateVal: Obj) => {
+    if (stateVal[0] !== splitEventName[0]) { return; }
+    // セット数が一致するフィールドに入力値をセット
+    stateVal[splitEventName[1]] = Number(event.target.value);
+  });
+  return statement;
+}
+
 const TrainingDetail = (props: Obj) => {
   const trainingDate = dayjs(new Date()).format('YYYY/MM/DD');
   const dayOfWeek = dayjs(trainingDate).format('dddd');
+
+  let trainingLogs = props.stateItem;
+  const [trainingLogsState, setTrainingLogsState] = useState<Obj>(trainingLogs);
+
+  return (
+    <>
+      <div className="trainingLogHeader">
+        <div className="flexArea">
+          <div className="trainingDate">{trainingDate} {dayOfWeek}</div>
+          <div>
+            <Button variant="contained" onClick={() => registerData(trainingLogsState)}>登録</Button>
+          </div>
+        </div>
+        <div className="trainingEventName">{props.dataItem.eventName}</div>
+      </div>
+      {/* tebleのwidthがデフォルト状態で画面幅に応じて余分な余白ができているので今後改修予定する */}
+      <TableContainer component={Paper}>
+        <Table id="test" sx={{ minWidth: 950 }}>
+          {trainingLogs.map((logObject: Obj, baseIndex: number) => (
+          <>
+            <TableBody className="table-Border" sx={{ width: 300 }}>
+              <TableRow
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+              {Object.values(logObject).map((logVal: any, index: number) => (
+                <TableCell
+                  className = {
+                    index !== 0
+                    // 登録画面ではデフォルトのpadding:16pxが不要なのでCSS分岐して消しこむ
+                    ? (logVal !== 0 ? "tableCell-basic" : "tableCell-basic tableCell-input")
+                    : 'tableCell-sideHeader'
+                  }
+                >
+                  {logVal !== 0
+                    ? logVal
+                    : <TextField
+                        id="outlined-helperText"
+                        label= {baseIndex === 1 ? "kg" : baseIndex === 2 ? "回" : "秒"}
+                        // input内で値が変わるたびにイベントが発動する
+                        onChange={(event) => {
+                            const targetEventName = logObject[0] + '_' + index.toString();
+                            const editState = editTrainingLogs(event, targetEventName, trainingLogsState);
+                            setTrainingLogsState(editState)
+                          }
+                        }
+                      />
+                  }
+                </TableCell>
+              ))}
+              </TableRow>
+            </TableBody>
+          </>
+          ))}
+        </Table>
+      </TableContainer>
+      <div className="trainingLogMemo">
+        <TextField id="standard-basic" label="メモ" variant="standard" fullWidth/>
+      </div>
+    </>
+  )
+}
+
+const App = () => {
+  const location = useLocation();
+  const queryParam = {
+    bodyCode: location.state.bodyCode,
+    eventCode: location.state.eventCode,
+    eventName: location.state.eventName
+  }
+
   let setCount: any = ['セット'];
   let weight: any = ['重量'];
   let count: any = ['回数'];
@@ -49,74 +147,9 @@ const TrainingDetail = (props: Obj) => {
 
   return (
     <>
-      <div className="trainingLogHeader">
-        <div className="trainingDate">{trainingDate} {dayOfWeek}</div>
-        <div className="trainingEventName">{props.dataItem.eventName}</div>
-      </div>
-      {/* tebleのwidthがデフォルト状態で画面幅に応じて余分な余白ができているので今後改修予定する */}
-      <TableContainer component={Paper}>
-        <Table id="test" sx={{ minWidth: 950 }}>
-          {trainingLogs.map((logObject, baseIndex) => (
-          <>
-            <TableBody className="table-Border" sx={{ width: 300 }}>
-              <TableRow
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-              {Object.values(logObject).map((logVal: any, index: number) => (
-                <TableCell
-                  className = {
-                    index !== 0
-                    // 登録画面ではデフォルトのpadding:16pxが不要なのでCSS分岐して消しこむ
-                    ? (logVal !== 0 ? "tableCell-basic" : "tableCell-basic tableCell-input")
-                    : 'tableCell-sideHeader'
-                  }
-                >
-                  {logVal !== 0
-                    ? logVal
-                    : <TextField
-                        id="outlined-helperText"
-                        label= {baseIndex === 1 ? "kg" : baseIndex === 2 ? "回" : "秒" }
-                      />
-                  }
-                </TableCell>
-              ))}
-              </TableRow>
-            </TableBody>
-          </>
-          ))}
-        </Table>
-      </TableContainer>
-      <div className="trainingLogMemo">
-        <TextField id="standard-basic" label="メモ" variant="standard" fullWidth/>
-      </div>
-    </>
-  )
-}
-
-const App = () => {
-  // let test: HTMLTableElement = document.getElementById('test') as HTMLTableElement;
-
-  // if (test !== null) {
-  //   // rowsやcellsはArrayLikeですがIterableではないのでArray.formで配列にするとfor ofを使えます。
-  //   for (let row of Array.from(test.rows)) {
-  //     for (let cell of Array.from(row.cells)) {
-  //       // console.log(cell);
-  //         // cell.textContent = 'test';
-  //     }
-  //   }
-  // }
-  const location = useLocation();
-  const queryParam = {
-    bodyCode: location.state.bodyCode,
-    eventCode: location.state.eventCode,
-    eventName: location.state.eventName
-  }
-
-  return (
-    <>
       <Header />
       <div className="container">
-        <TrainingDetail dataItem={queryParam}/>
+        <TrainingDetail dataItem={queryParam} stateItem={trainingLogs} />
       </div>
     </>
   );
