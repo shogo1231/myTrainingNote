@@ -24,7 +24,7 @@ interface Obj {
 // メモ：モジュール化して各ページでべた書きしないようにする
 dayjs.locale(ja);
 
-const registerData = (state: any) => {
+const registerData = (state: any, memo: string, bodyCode: string, eventCode: string) => {
   // material-UIのtableの各セルの値を取得する処理　現状不要だが備忘として残しておく
   // let test: HTMLTableElement = document.getElementById('test') as HTMLTableElement;
 
@@ -37,7 +37,29 @@ const registerData = (state: any) => {
   //     }
   //   }
   // }
+  const sendData = {
+    bodyCode: bodyCode,
+    eventCode: eventCode,
+    logItems: state,
+    memo: memo
+  }
 
+  try {
+    fetch(`/api/registerTrainingLog`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(sendData)
+    })
+    .then(() => {
+      alert('登録しました');
+    })
+  }
+  catch (e) {
+    console.error(e);
+  }
   console.log(state);
 }
 
@@ -57,14 +79,22 @@ const TrainingDetail = (props: Obj) => {
 
   let trainingLogs = props.stateItem;
   const [trainingLogsState, setTrainingLogsState] = useState<Obj>(trainingLogs);
+  const [trainingLogsMemo, setTrainingLogsMemo] = useState('');
 
+  // データ登録時に送信するパラメータ用
+  const bodyCode = props.dataItem.bodyCode;
+  const eventCode = props.dataItem.eventCode;
   return (
     <>
       <div className="trainingLogHeader">
         <div className="flexArea">
           <div className="trainingDate">{trainingDate} {dayOfWeek}</div>
           <div>
-            <Button variant="contained" onClick={() => registerData(trainingLogsState)}>登録</Button>
+            <Button
+              variant="contained"
+              onClick={() =>
+                registerData(trainingLogsState, trainingLogsMemo, bodyCode, eventCode)}>登録
+            </Button>
           </div>
         </div>
         <div className="trainingEventName">{props.dataItem.eventName}</div>
@@ -110,7 +140,16 @@ const TrainingDetail = (props: Obj) => {
         </Table>
       </TableContainer>
       <div className="trainingLogMemo">
-        <TextField id="standard-basic" label="メモ" variant="standard" fullWidth/>
+        <TextField
+          id="standard-basic"
+          label="メモ"
+          variant="standard"
+          fullWidth
+          onChange={(event) => {
+            setTrainingLogsMemo(event.target.value)
+          }
+        }
+        />
       </div>
     </>
   )

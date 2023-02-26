@@ -112,6 +112,45 @@ export async function getAllEventItems () {
   }
 }
 
+export async function registerTrainingLogs (sendData: Obj) {
+  // DB接続
+  const connection = await dbSetting();
+
+  // 日付取得(datetime型)
+  const registDate = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
+
+  // 送信データの整形
+  const shapingData = makeRegistData(registDate, sendData);
+
+  // テーブルのカラム名を取得
+  const getColumnNameQuery = 'DESCRIBE trainingLogs';
+  const getColumnName = await connection.execute(getColumnNameQuery);
+  const ColumnName: any = getColumnName[0];
+
+  // INSERT INTO以降のクエリ部分を作成
+  const columns = ColumnName
+  .reduce((acc: string, cur: Obj) => {
+    return acc + cur.Field + ','
+  }, '(')
+  .slice(0, -1)
+  .concat(')');
+
+  // テーブルのカラム数を取得
+  const getColumnQuery = 'select count(*) as count from information_schema.columns where table_name = "trainingLogs"';
+  const getColumn = await connection.execute(getColumnQuery);
+  const getCount: any = getColumn[0];
+  const loopCount = getCount[0].count;
+
+  // VALUES以降のクエリ部分を作成
+  const questions = `(${'?,'.repeat(loopCount).slice(0, -1)})`;
+
+  // データ更新クエリ
+  const query = `insert into trainingLogs ${columns} VALUES ${questions}`;
+
+  // データ更新
+  await connection.execute(query, shapingData);
+}
+
 /**
  * 合計重量、合計セット数、推定1RMの計算
  * @param editRowItem
@@ -177,5 +216,35 @@ function calcRepetitionMaximum (calcRMDatas: calcRMDatas, eventName: string) {
       break;
   }
   result = big.trunc(result, 3);
+  return result;
+}
+
+/**
+ * クライアントから送信されたデータを登録用に整形する
+ * @param date
+ * @param sendData
+ * @description いったんべた書きとする。柔軟性を求める方法としてDBのカラム名と
+ * 送られてくるオブジェクトのkeyを等しくすることで対応出来る。将来的な課題としておく。
+ */
+function makeRegistData (date: any, sendData: any) {
+  let result = [];
+
+  // 日付の追加
+  result.push(date);
+
+  // bodycode、eventCodeの順に追加
+  result.push(sendData.bodyCode, sendData.eventCode);
+
+  // bodycode追加
+  const logItems = sendData.logItems;
+  for (let i = 1; i <= 10; i++) {
+    for (let j = 0; j < logItems.length; j++) {
+      result.push(logItems[j][i]);
+    }
+  }
+
+  // memoの追加
+  result.push(sendData.memo);
+
   return result;
 }
