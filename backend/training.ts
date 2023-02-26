@@ -112,6 +112,10 @@ export async function getAllEventItems () {
   }
 }
 
+/**
+ * トレーニング履歴登録処理
+ * @param sendData
+ */
 export async function registerTrainingLogs (sendData: Obj) {
   // DB接続
   const connection = await dbSetting();
