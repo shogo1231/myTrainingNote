@@ -59,7 +59,7 @@ const DispEventListDetail = (props: Obj) => {
 
   return (
     <>
-      <ListItemButton onClick={() => navigate('/register', {state: setStateVal})}>
+      <ListItemButton onClick={() => navigate('/training/register', {state: setStateVal})}>
         <ListItemText primary={props.data.trainingEvents_name} />
       </ListItemButton>
       <Divider />

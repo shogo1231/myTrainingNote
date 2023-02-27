@@ -50,7 +50,7 @@ const TrainingItem = (props: Training) => {
     'eventCode': props.items.event_code,
   };
   return (
-    <div className="trainingList" onClick={() => navigate('/Log', {state: setStateVal})}>
+    <div className="trainingList" onClick={() => navigate('/training/Log', {state: setStateVal})}>
       <Stack spacing={2}>
         <TestItem>
           <div className="flex">
