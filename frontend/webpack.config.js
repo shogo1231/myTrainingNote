@@ -62,7 +62,7 @@ module.exports = {
     // 「ドメイン名/api」のパスをバックエンドサーバーへ転送する設定
     proxy: {
       '/api': {
-        target: 'http://localhost:8001'
+        target: 'http://133.130.91.178:8001'
       }
     },
   },
