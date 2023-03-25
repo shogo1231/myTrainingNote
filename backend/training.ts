@@ -121,7 +121,7 @@ export async function registerTrainingLogs (sendData: Obj) {
   const connection = await dbSetting();
 
   // 日付取得(datetime型)
-  const registDate = dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss');
+  const registDate = dayjs(new Date(sendData.trainingDate)).format('YYYY-MM-DD HH:mm:ss');
 
   // 送信データの整形
   const shapingData = makeRegistData(registDate, sendData);
