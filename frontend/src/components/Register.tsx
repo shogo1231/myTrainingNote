@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom"
 import Header from "./Header";
 import '../App.css';
 import '../css/TrainingLog.css';
+import '../css/Register.css';
 import dayjs from 'dayjs';
 import ja from 'dayjs/locale/ja';
 
@@ -15,6 +16,10 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+
 interface Obj {
   [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
   [prop: number]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
@@ -24,7 +29,7 @@ interface Obj {
 // メモ：モジュール化して各ページでべた書きしないようにする
 dayjs.locale(ja);
 
-const registerData = (state: any, memo: string, bodyCode: string, eventCode: string) => {
+const registerData = (state: any, memo: string, bodyCode: string, eventCode: string, trainingDate: string) => {
   // material-UIのtableの各セルの値を取得する処理　現状不要だが備忘として残しておく
   // let test: HTMLTableElement = document.getElementById('test') as HTMLTableElement;
 
@@ -41,7 +46,8 @@ const registerData = (state: any, memo: string, bodyCode: string, eventCode: str
     bodyCode: bodyCode,
     eventCode: eventCode,
     logItems: state,
-    memo: memo
+    memo: memo,
+    trainingDate: trainingDate,
   }
 
   try {
@@ -80,6 +86,8 @@ const TrainingDetail = (props: Obj) => {
   let trainingLogs = props.stateItem;
   const [trainingLogsState, setTrainingLogsState] = useState<Obj>(trainingLogs);
   const [trainingLogsMemo, setTrainingLogsMemo] = useState('');
+  const [selectTrainingDate, setSelectTrainingDate] = useState<string>(trainingDate)
+  const [selectDayOfWeek, setSelectDayOfWeek] = useState<string>(dayOfWeek)
 
   // データ登録時に送信するパラメータ用
   const bodyCode = props.dataItem.bodyCode;
@@ -88,12 +96,37 @@ const TrainingDetail = (props: Obj) => {
     <>
       <div className="trainingLogHeader">
         <div className="flexArea">
-          <div className="trainingDate">{trainingDate} {dayOfWeek}</div>
+          <div className="trainingDate">
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={ja}
+              dateFormats={{ monthAndYear: "YYYY年 MM月" }} //カレンダー左上の日付表示
+            >
+              <MobileDatePicker
+                className="mobileDatePickerDisplay"
+                defaultValue={dayjs(selectTrainingDate)}
+                format='YYYY/MM/DD'
+                // valueはdayjsの結果が格納されている
+                onChange={(value) => {
+                  let data = dayjs(value[`$d`]).format('YYYY/MM/DD');
+                  setSelectTrainingDate(data);
+                  }
+                }
+                onClose={() => {
+                  let week = dayjs(selectTrainingDate).format('dddd');
+                  setSelectDayOfWeek(week);
+                }
+                }
+              />
+            </LocalizationProvider>
+            {selectDayOfWeek}
+          </div>
+
           <div>
             <Button
               variant="contained"
               onClick={() =>
-                registerData(trainingLogsState, trainingLogsMemo, bodyCode, eventCode)}>登録
+                registerData(trainingLogsState, trainingLogsMemo, bodyCode, eventCode, selectTrainingDate)}>登録
             </Button>
           </div>
         </div>
@@ -160,7 +193,8 @@ const App = () => {
   const queryParam = {
     bodyCode: location.state.bodyCode,
     eventCode: location.state.eventCode,
-    eventName: location.state.eventName
+    eventName: location.state.eventName,
+    // この辺に元画面から選択した日付を持ってくる想定
   }
 
   let setCount: any = ['セット'];
