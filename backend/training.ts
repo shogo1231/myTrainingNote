@@ -113,6 +113,70 @@ export async function getAllEventItems () {
 }
 
 /**
+ * codeが一致するトレーニング種目を取得
+ */
+export async function getTrainingEventItems (code: string) {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+    const query = `
+      SELECT *
+      FROM trainingEvents
+      WHERE body_code = ${code}
+      ORDER BY body_code`;
+
+    const rows = await connection.execute(query);
+    const rowItem: any = rows[0];
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+
+/**
+ * すべてのトレーニング種目部位を取得
+ */
+export async function getAllBodyParts () {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+    const query = 'SELECT * FROM bodyParts ORDER BY bodyParts_code';
+
+    const rows = await connection.execute(query);
+    const rowItem: any = rows[0];
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+
+/**
+ * codeが一致するトレーニング種目を取得
+ */
+export async function getBodyPartsItems (code: string) {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+    const query = `
+      SELECT *
+      FROM bodyParts
+      WHERE bodyParts_code = ${code}
+      ORDER BY bodyParts_code`;
+
+    const rows = await connection.execute(query);
+    const rowItem: any = rows[0];
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+/**
  * トレーニング履歴登録処理
  * @param sendData
  */

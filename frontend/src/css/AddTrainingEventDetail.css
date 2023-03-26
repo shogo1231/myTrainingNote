@@ -1,0 +1,23 @@
+.center {
+  text-align: center;
+}
+
+.bodyPartsListTitle h3{
+  margin: 0;
+  padding-top: 10px;
+}
+
+.selectBodyPartsArea,
+.inputTrainingEventArea {
+  width: 250px;
+}
+
+.outer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trainingEventRegisterButton {
+  padding: 20px;
+}
