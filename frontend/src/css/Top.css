@@ -22,3 +22,7 @@
 .calenderArea {
   padding-top: 20px;
 }
+
+.trainingList {
+  cursor: pointer;
+}
