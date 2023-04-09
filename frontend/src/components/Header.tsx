@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -16,6 +16,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import AddIcon from '@mui/icons-material/Add';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 const list = () => (
   <Box
@@ -59,6 +60,7 @@ export default function Header() {
   const navigate = useNavigate();
   let setStateVal = {};
 
+  const location = useLocation();
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -77,6 +79,20 @@ export default function Header() {
             <Typography variant="h4" component="div" sx={{ flexGrow: 1 }} textAlign="center">
               myTrainingNote
             </Typography>
+            { location.pathname.match(/selectEvent/) &&
+              <IconButton
+                size="large"
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                text-arign= "light"
+                sx={{ mr: 2 }}
+                style={{ margin: 0 }}
+                onClick={() => navigate('/training/addEvent', {state: setStateVal})}
+              >
+                <PlaylistAddIcon/>
+              </IconButton>
+            }
             <IconButton
               size="large"
               edge="end"

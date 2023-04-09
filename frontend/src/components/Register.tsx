@@ -66,7 +66,6 @@ const registerData = (state: any, memo: string, bodyCode: string, eventCode: str
   catch (e) {
     console.error(e);
   }
-  console.log(state);
 }
 
 const editTrainingLogs = (event: any, eventName: string, statement: Obj) => {

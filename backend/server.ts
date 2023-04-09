@@ -30,6 +30,18 @@ app.get('/api/getAllEventItems', async (req: express.Request, res: express.Respo
   res.status(200).send(getAllEventItems);
 });
 
+app.get('/api/getAllBodyParts', async (req: express.Request, res: express.Response) => {
+  const getAllBodyParts = await training.getAllBodyParts();
+  res.status(200).send(getAllBodyParts);
+});
+
+app.get('/api/getTrainingEventItems', async (req: express.Request, res: express.Response) => {
+  const eventCode: any = req.query.code;
+  const getTrainingEventItems = await training.getTrainingEventItems(eventCode);
+  const getBodyPartsName = await training.getBodyPartsItems(eventCode);
+  res.status(200).send({trainingEventData: getTrainingEventItems, bodyPartsName: getBodyPartsName});
+});
+
 app.post('/api/registerTrainingLog', async (req: express.Request, res: express.Response) => {
   try {
     const sendData = req.body;
@@ -39,7 +51,17 @@ app.post('/api/registerTrainingLog', async (req: express.Request, res: express.R
   catch (err: any) {
     throw new Error(err)
   }
+});
 
+app.post('/api/registerTrainingEvent', async (req: express.Request, res: express.Response) => {
+  try {
+    const sendData = req.body;
+    await training.registerTrainingEvent(sendData);
+    res.status(200).send('ok');
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
 });
 
 app.listen(port, () => {
