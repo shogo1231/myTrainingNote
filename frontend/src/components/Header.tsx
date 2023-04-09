@@ -17,6 +17,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import AddIcon from '@mui/icons-material/Add';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import '../css/Header.css'
 
 const list = () => (
   <Box
@@ -76,22 +77,24 @@ export default function Header() {
             >
               <MenuIcon/>
             </IconButton>
-            <Typography variant="h4" component="div" sx={{ flexGrow: 1 }} textAlign="center">
-              myTrainingNote
-            </Typography>
+            <h2
+              className="HeaderBarTitle"
+              onClick={() => navigate('/training/top')}
+            > トレーニング記録
+            </h2>
             { location.pathname.match(/selectEvent/) &&
-              <IconButton
-                size="large"
-                edge="end"
-                color="inherit"
-                aria-label="menu"
-                text-arign= "light"
-                sx={{ mr: 2 }}
-                style={{ margin: 0 }}
-                onClick={() => navigate('/training/addEvent', {state: setStateVal})}
-              >
-                <PlaylistAddIcon/>
-              </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              text-arign= "light"
+              sx={{ mr: 2 }}
+              style={{ margin: 0 }}
+              onClick={() => navigate('/training/addEvent', {state: setStateVal})}
+            >
+              <PlaylistAddIcon/>
+            </IconButton>
             }
             <IconButton
               size="large"
