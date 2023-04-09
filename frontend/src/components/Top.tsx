@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "./Header";
 import FullCalendar from '@fullcalendar/react';
@@ -7,24 +7,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from "@fullcalendar/interaction";
 import '../App.css';
-import '../css/AccountList.css';
+import '../css/Top.css';
 import { Stack } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import CircleIcon from '@mui/icons-material/Circle';
-
-interface Fruit {
-  id: string;
-  name: string;
-}
-
-const Item = (props: any) => {
-  return (
-    <div className="text" >
-      <h2>{props.name}</h2>
-    </div>
-  );
-};
 
 interface Training {
   children: never[],
@@ -92,25 +79,8 @@ function selectBodyPartsIcon(bodyPartsCode: number) {
 }
 
 const App = () => {
-  const [userDatas, setFruits] = useState([]);
   const [trainingDatas, settrainingDatas] = useState([{}]);
   const [selectDate, setDate] = useState();
-  const URL = '/api/getUser';
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        fetch(URL)
-        .then(res => res.json())
-        .then(json => {
-          setFruits(json);
-        })
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    fetchData();
-  }, []);
 
   // 引数infoはFullCalendarのdateClickInfoを参照しているのでanyにしておく
   const handleDateClick = (info: any) => {
@@ -135,14 +105,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <div className="container fruitsList">
-        <h1>アカウント情報</h1>
-
-        {userDatas?.map((fruit: Fruit, index) => {
-          return <Item key={index} name={fruit.name} ></Item>;
-        })}
-      </div>
-      <div>
+      <div className='calenderArea'>
         <FullCalendar
           plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
           initialView="dayGridWeek"
