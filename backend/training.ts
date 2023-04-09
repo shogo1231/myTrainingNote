@@ -164,8 +164,7 @@ export async function getBodyPartsItems (code: string) {
     const query = `
       SELECT *
       FROM bodyParts
-      WHERE bodyParts_code = ${code}
-      ORDER BY bodyParts_code`;
+      WHERE bodyParts_code = ${code}`;
 
     const rows = await connection.execute(query);
     const rowItem: any = rows[0];
@@ -176,6 +175,7 @@ export async function getBodyPartsItems (code: string) {
     throw new Error(err)
   }
 }
+
 /**
  * トレーニング履歴登録処理
  * @param sendData
@@ -214,6 +214,48 @@ export async function registerTrainingLogs (sendData: Obj) {
 
   // データ更新クエリ
   const query = `insert into trainingLogs ${columns} VALUES ${questions}`;
+
+  // データ更新
+  await connection.execute(query, shapingData);
+}
+
+/**
+ * トレーニング種目登録処理
+ * @param sendData
+ */
+export async function registerTrainingEvent (sendData: Obj) {
+  // DB接続
+  const connection = await dbSetting();
+
+  // 登録データ整形
+  const shapingData = [sendData.trainingEventName, sendData.bodyPartsCode];
+
+  // テーブルのカラム名を取得
+  const getColumnNameQuery = 'DESCRIBE trainingEvents';
+  const getColumnName = await connection.execute(getColumnNameQuery);
+  const ColumnName: any = getColumnName[0];
+
+  ColumnName.shift() // code列は1列目に存在し、AIを設定しているので除外する
+
+  // INSERT INTO以降のクエリ部分を作成
+  const columns = ColumnName
+  .reduce((acc: string, cur: Obj) => {
+    return acc + cur.Field + ','
+  }, '(')
+  .slice(0, -1)
+  .concat(')');
+
+  // テーブルのカラム数を取得
+  const getColumnQuery = 'select count(*) as count from information_schema.columns where table_name = "trainingEvents"';
+  const getColumn = await connection.execute(getColumnQuery);
+  const getCount: any = getColumn[0];
+  const loopCount = getCount[0].count -1; // code列はAIを設定しているので総カラム数から除外する
+
+  // VALUES以降のクエリ部分を作成
+  const questions = `(${'?,'.repeat(loopCount).slice(0, -1)})`;
+
+  // データ更新クエリ
+  const query = `insert into trainingEvents ${columns} VALUES ${questions}`;
 
   // データ更新
   await connection.execute(query, shapingData);

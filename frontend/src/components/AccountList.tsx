@@ -114,7 +114,6 @@ const App = () => {
 
   // 引数infoはFullCalendarのdateClickInfoを参照しているのでanyにしておく
   const handleDateClick = (info: any) => {
-    console.log(info);
     setDate(info.dateStr);
 
     // 日付をクリックしたタイミングで日付と一致するトレーニング履歴データを取得しstateを更新しておく

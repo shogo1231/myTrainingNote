@@ -53,6 +53,17 @@ app.post('/api/registerTrainingLog', async (req: express.Request, res: express.R
   }
 });
 
+app.post('/api/registerTrainingEvent', async (req: express.Request, res: express.Response) => {
+  try {
+    const sendData = req.body;
+    await training.registerTrainingEvent(sendData);
+    res.status(200).send('ok');
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+});
+
 app.listen(port, () => {
   console.log(`port ${port} でサーバ起動中`);
 });

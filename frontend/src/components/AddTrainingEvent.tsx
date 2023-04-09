@@ -20,20 +20,13 @@ interface Training {
   onChange: (event: React.SyntheticEvent, newValue: number) => void
 }
 
-
-
 const DispEventListDetail = (props: Obj) => {
   const navigate = useNavigate();
-  let setStateVal = {
-    'bodyPartsCode': props.data.bodyParts_code,
-    'bodyPartsName': props.data.bodyParts_name,
-  };
-
   return (
     <>
       <ListItemButton
-        onClick={() => navigate(`/training/addTrainingEvent/${props.data.bodyParts_code}`,
-        {state: setStateVal})}
+        onClick={() => navigate(`/training/addEvent/${props.data.bodyParts_code}`,
+        )}
       >
         <ListItemText primary={props.data.bodyParts_name} />
       </ListItemButton>
@@ -43,10 +36,7 @@ const DispEventListDetail = (props: Obj) => {
 }
 
 const DispEventList = (props: any) => {
-  // let trainingEventLists = props.item.filter((eventItem: Obj) => {
-  //   return eventItem.body_code === props.bodyValue;
-  // });
-  let bodyPartsDatas = props.item;
+  const bodyPartsDatas = props.item;
   return (
     <List
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: 'auto' }}

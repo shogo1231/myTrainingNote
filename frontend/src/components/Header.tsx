@@ -88,7 +88,7 @@ export default function Header() {
                 text-arign= "light"
                 sx={{ mr: 2 }}
                 style={{ margin: 0 }}
-                onClick={() => navigate('/training/addTrainingEvent', {state: setStateVal})}
+                onClick={() => navigate('/training/addEvent', {state: setStateVal})}
               >
                 <PlaylistAddIcon/>
               </IconButton>
