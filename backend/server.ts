@@ -64,6 +64,18 @@ app.post('/api/registerTrainingEvent', async (req: express.Request, res: express
   }
 });
 
+// トレーニング履歴の削除
+app.delete('/api/deleteTrainingLog', async (req: express.Request, res: express.Response) => {
+  try {
+    const sendData = req.body;
+    await training.deleteTrainingLogs(sendData);
+    res.status(200).send('ok');
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+});
+
 app.listen(port, () => {
   console.log(`port ${port} でサーバ起動中`);
 });

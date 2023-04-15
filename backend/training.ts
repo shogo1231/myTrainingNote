@@ -79,7 +79,7 @@ export async function getTrainingLogDetail (queryParam: queryParam) {
     const rows = await connection.execute(query, param);
     const rowItem: any = rows[0];
 
-    // 上記クエリよりroeItemは1データしかない前提でボリュームと1RMを計算しクライアントに返す
+    // 上記クエリよりrowItemは1データしかない前提でボリュームと1RMを計算しクライアントに返す
     let editRowItem: Obj =  rowItem[0];
     // 返り値の合計セット数は使用しない想定
     const culcResult = cultMultipleTotalVal(editRowItem);
@@ -217,6 +217,30 @@ export async function registerTrainingLogs (sendData: Obj) {
 
   // データ更新
   await connection.execute(query, shapingData);
+}
+
+/**
+ * トレーニング履歴削除処理
+ * @param sendData
+ */
+export async function deleteTrainingLogs (sendData: Obj) {
+  // DB接続
+  const connection = await dbSetting();
+
+  // 日付取得(datetime型)
+  // 同じ日にちに同じ種目を２つ登録できない仕様なので年月日のみでよい
+  const targetDate = dayjs(new Date(sendData.date)).format('YYYY-MM-DD');
+
+  // データ削除クエリ
+  const query = `
+    DELETE FROM trainingLogs 
+    WHERE execute_date LIKE "${targetDate}%"
+      AND body_code = "${sendData.bodyCode}"
+      AND event_code = "${sendData.eventCode}"
+    LIMIT 1`;
+
+  // クエリ実行
+  await connection.execute(query);
 }
 
 /**

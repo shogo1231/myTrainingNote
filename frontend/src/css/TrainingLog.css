@@ -36,6 +36,11 @@
   font-size: 20px;
 }
 
+.trainingDate_Buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* 登録画面でのみ使用 */
 .flexArea {
   display: flex;
