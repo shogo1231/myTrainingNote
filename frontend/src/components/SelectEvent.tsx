@@ -12,6 +12,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 
+import IconButton from '@mui/material/IconButton';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
 interface Obj {
   [prop: string]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
   [prop: number]: any // 『[prop: string]: any』を記述してあげることでどんなプロパティも持てるようになります。
@@ -67,6 +71,7 @@ const DispEventListDetail = (props: Obj) => {
   );
 }
 
+// 部位単位での全データを表示するコンポーネント
 const DispEventList = (props: any) => {
   let trainingEventLists = props.item.filter((eventItem: Obj) => {
     return eventItem.body_code === props.bodyValue;
@@ -84,8 +89,41 @@ const DispEventList = (props: any) => {
   );
 }
 
+const DispMethodListDetail = (props: Obj) => {
+  const navigate = useNavigate();
+  let setStateVal = {
+    'methodCode': props.data.methodCode,
+    'methodName ': props.data.methodName,
+  };
+
+  return (
+    <>
+      <ListItemButton onClick={() => navigate('/training/menuSetting', {state: setStateVal})}>
+        <ListItemText primary={props.data.methodName} />
+      </ListItemButton>
+      <Divider />
+    </>
+  );
+}
+
+// 全てのトレーニング方法データを表示するコンポーネント
+const DispEventListMethod = (props: any) => {
+  return (
+    <List
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: 'auto' }}
+      component="nav"
+      aria-labelledby="nested-list-subheader"
+    >
+    {props.item.map((methodData: any, index: number) => {
+      return <DispMethodListDetail data={methodData} key={methodData.methodCode}/>
+    })}
+    </List>
+  );
+}
+
 const App = () => {
   const [trainingDetailData, setTrainingDetailData] = useState<Obj>([]);
+  const [trainingMethodData, setTrainingMethodData] = useState<Obj>([]);
   const URL = `/api/getAllEventItems`;
 
   const [selectBodyValue, setBodyValue] = useState(1); // デフォルトは「胸」としておく
@@ -93,13 +131,22 @@ const App = () => {
     setBodyValue(newValue);
   };
 
+  // 部位・計画どちらの表示を適用するかの判定用
+  const [dispPlanFlg, setDispPlanFlg] = useState('部位'); // デフォルトは「部位」としておく
+
+  const navigate = useNavigate();
+
+  // サーバより種目データの取得とstateへのセット
+  // 部位・計画の切り替えで表示データが違うのでここでまとめてデータ取得しパフォーマンスを抑えたい
+  // いったんURIはそのまま
   useEffect(() => {
     const fetchData = async () => {
       try {
         fetch(URL)
         .then(res => res.json())
         .then(result => {
-          setTrainingDetailData(result);
+          setTrainingDetailData(result.event);
+          setTrainingMethodData(result.method);
         })
       } catch (e) {
         console.error(e);
@@ -111,17 +158,65 @@ const App = () => {
   return (
     <>
       <Header />
-      <SelectEvents
-        item={trainingDetailData}
-        bodyValue={selectBodyValue}
-        onChange={handleChange}
-      />
-      <div className="dispEventListArea">
-        <DispEventList
+      { dispPlanFlg === '部位' &&
+      <>
+        <SelectEvents
           item={trainingDetailData}
           bodyValue={selectBodyValue}
-          key={trainingDetailData.event_code}
+          onChange={handleChange}
         />
+        <div className="dispEventListArea">
+          <DispEventList
+            item={trainingDetailData}
+            bodyValue={selectBodyValue}
+            key={trainingDetailData.event_code}
+          />
+        </div>
+      </>
+      }
+      { dispPlanFlg === '計画' &&
+      <>
+        {/* セット名を登録しているデータのリスト表示。種目名とはやることが違うのでコンポーネントはいったん分けておく */}
+        <div className="dispEventListArea">
+          <DispEventListMethod
+            item={trainingMethodData}
+            key={trainingMethodData.methodCode}
+          />
+        </div>
+        </>
+      }
+
+      <div className='selectPlanArea'>
+        <div>
+          <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            text-arign= "light"
+            sx={{ mr: 2 }}
+            style={{ margin: 0 }}
+            onClick={() => setDispPlanFlg('部位')}
+          >
+            <AccessibilityNewIcon/>
+          </IconButton>
+          <div>部位から選択</div>
+        </div>
+        <div>
+          <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+            aria-label="menu"
+            text-arign= "light"
+            sx={{ mr: 2 }}
+            style={{ margin: 0 }}
+            onClick={() => setDispPlanFlg('計画')}
+          >
+            <AssignmentIcon/>
+          </IconButton>
+          <div>計画から選択</div>
+        </div>
       </div>
     </>
   );

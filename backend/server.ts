@@ -27,7 +27,8 @@ app.get('/api/getTrainingLogDetail', async (req: express.Request, res: express.R
 
 app.get('/api/getAllEventItems', async (req: express.Request, res: express.Response) => {
   const getAllEventItems = await training.getAllEventItems();
-  res.status(200).send(getAllEventItems);
+  const getAllMethodsItems = await training.getAllMethodsItems();
+  res.status(200).send({event: getAllEventItems, method: getAllMethodsItems});
 });
 
 app.get('/api/getAllBodyParts', async (req: express.Request, res: express.Response) => {

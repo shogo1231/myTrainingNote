@@ -2,3 +2,12 @@
 .dispEventListArea {
   padding-top: 15px;
 }
+
+.selectPlanArea {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.selectPlanArea div button {
+  margin-left: 23px !important;
+}

@@ -113,6 +113,25 @@ export async function getAllEventItems () {
 }
 
 /**
+ * すべてのトレーニング方法名を取得
+ */
+export async function getAllMethodsItems () {
+  try {
+    // DB接続
+    const connection = await dbSetting();
+    const query = 'SELECT * FROM trainingMethods ORDER BY methodCode';
+
+    const rows = await connection.execute(query);
+    const rowItem: any = rows[0];
+
+    return rowItem;
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+}
+
+/**
  * codeが一致するトレーニング種目を取得
  */
 export async function getTrainingEventItems (code: string) {
