@@ -92,13 +92,13 @@ const DispEventList = (props: any) => {
 const DispMethodListDetail = (props: Obj) => {
   const navigate = useNavigate();
   let setStateVal = {
+    'methodName': props.data.methodName,
     'methodCode': props.data.methodCode,
-    'methodName ': props.data.methodName,
   };
 
   return (
     <>
-      <ListItemButton onClick={() => navigate('/training/menuSetting', {state: setStateVal})}>
+      <ListItemButton onClick={() => navigate('/training/menuSetting', {state: JSON.stringify(setStateVal)})}>
         <ListItemText primary={props.data.methodName} />
       </ListItemButton>
       <Divider />
