@@ -1,0 +1,23 @@
+.selectAutocompleteArea {
+  padding: 5px 0;
+  width: 300px;
+  /* text-align: center; */
+  display: flex;
+  margin: 0 auto;
+}
+
+/* メニュー表示のテーブル部分 */
+.tableCell-basic {
+  text-align: right !important;
+  border-left:1px solid #e0e0e0 !important;
+  border-right:1px solid #e0e0e0 !important;
+  width: 35px;
+}
+
+.table-Border {
+  border-bottom:1px solid #e0e0e0 !important;
+}
+
+.tableCell-Width {
+  width: 30px;
+}

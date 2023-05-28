@@ -27,7 +27,8 @@ app.get('/api/getTrainingLogDetail', async (req: express.Request, res: express.R
 
 app.get('/api/getAllEventItems', async (req: express.Request, res: express.Response) => {
   const getAllEventItems = await training.getAllEventItems();
-  res.status(200).send(getAllEventItems);
+  const getAllMethodsItems = await training.getAllMethodsItems();
+  res.status(200).send({event: getAllEventItems, method: getAllMethodsItems});
 });
 
 app.get('/api/getAllBodyParts', async (req: express.Request, res: express.Response) => {
@@ -57,6 +58,18 @@ app.post('/api/registerTrainingEvent', async (req: express.Request, res: express
   try {
     const sendData = req.body;
     await training.registerTrainingEvent(sendData);
+    res.status(200).send('ok');
+  }
+  catch (err: any) {
+    throw new Error(err)
+  }
+});
+
+// トレーニング履歴の削除
+app.delete('/api/deleteTrainingLog', async (req: express.Request, res: express.Response) => {
+  try {
+    const sendData = req.body;
+    await training.deleteTrainingLogs(sendData);
     res.status(200).send('ok');
   }
   catch (err: any) {
