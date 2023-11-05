@@ -9,7 +9,8 @@ BIG3の１RMを自動計算できる<br>
 フロントエンド：React(CRAは使わない),Typescript<br>
 バックエンド：Node.js<br>
 DB：mySQL（conoha VPS使用）<br>
-webサーバ：NginX（conoha VPS使用）<br>
+~~webサーバ：NginX（conoha VPS使用）<br>~~
+webサーバ：NginX（Rasberry Pi Model B使用）<br>
 
 ## 追加予定機能
 食事内容を記録できる<br>
