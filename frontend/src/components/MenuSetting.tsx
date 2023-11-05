@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import Header from "./Header";
 import '../App.css';
 import '../SelectEvent.css';
-import '../css/MenuSetting.css'; 
+import '../css/MenuSetting.css';
 import * as culc from '../modules/culcTrainingMenu'
 
 import Button from '@mui/material/Button';
@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 const createTrainingMenu = (methodCode: string, methodName: string, trWeight: number) => {
   let result;
   // 種目は不要かもしれない。種目によって計算ロジックが変わりそうなら必要程度。
-  
+
   switch (methodName) {
     case 'アセンディングセット法':
       result = culc.assendingSet(trWeight);
@@ -38,7 +38,7 @@ const createTrainingMenu = (methodCode: string, methodName: string, trWeight: nu
       break;
     case 'レストポーズ法':
       result = culc.restPause(trWeight);
-      break; 
+      break;
     default:
       break;
   }
@@ -49,9 +49,9 @@ const createTrainingMenu = (methodCode: string, methodName: string, trWeight: nu
 /**
  * 各メニュー内容をテーブルで表示
  * テーブルは種目ごとのログ表示画面でのレイアウトをそのまま引用する
- * @param props 
- * @param key 
- * @returns 
+ * @param props
+ * @param key
+ * @returns
  */
 const DispTrMenuDatas = (props: any, key: any) => {
   return (
@@ -91,7 +91,7 @@ const App = () => {
   // const navigate = useNavigate();
   const location = useLocation();
   // 2個目以降のkeyに半角スペースが混入し正しく参照できない現象が起きてた。JSONで取得しているのでparseしておく
-  const getState = JSON.parse(location.state); 
+  const getState = JSON.parse(location.state);
   let methodCode = getState.methodCode;
   let methodName = getState.methodName;
   const [trWeight, settrWeight ] = useState<number>();

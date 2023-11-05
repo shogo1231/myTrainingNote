@@ -54,7 +54,7 @@ function deleteData (keyItems: Obj, navigate: any) {
 const TrainingDetail = (props: Training) => {
   const trainingDate = dayjs(new Date(props.item.execute_date)).format('YYYY/MM/DD');
   const dayOfWeek = dayjs(trainingDate).format('dddd');
-  let setCount: any = ['セット'];
+  let playcount: any = ['セット'];
   let weight: any = ['重量'];
   let count: any = ['回数'];
   let rest: any = ['レスト'];
@@ -70,13 +70,13 @@ const TrainingDetail = (props: Training) => {
 
   // セット、重量、回数、レストの４単位 １～１０までで１レコードとなるようにデータを成形する
   for (const [key, value] of Object.entries(props.item)) {
-    if (key.match(/^setcount/)) {
-      setCount.push(value);
+    if (key.match(/^playcount/)) {
+      playcount.push(value);
     }
     else if (key.match(/^weight/)) {
       weight.push(value);
     }
-    else if (key.match(/^playcount/)) {
+    else if (key.match(/^count/)) {
       count.push(value);
     }
     else if (key.match(/^rest/)) {
@@ -85,7 +85,7 @@ const TrainingDetail = (props: Training) => {
   }
 
   const trainingLogs = [
-    {...setCount},
+    {...playcount},
     {...weight},
     {...count},
     {...rest},
@@ -152,14 +152,13 @@ const App = () => {
         fetch(URL)
         .then(res => res.json())
         .then(result => {
-          console.log(result)
           setTrainingDetailData(result[0]);
         })
       } catch (e) {
         console.error(e);
       }
     };
-    
+
     fetchData();
   }, [URL]);
 

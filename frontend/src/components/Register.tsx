@@ -79,7 +79,7 @@ const editTrainingLogs = (event: any, eventName: string, statement: Obj) => {
 }
 
 const TrainingDetail = (props: Obj) => {
-  const trainingDate = dayjs(new Date()).format('YYYY/MM/DD');
+  const trainingDate = dayjs(new Date()).format('YYYY/MM/DD HH:mm:ss');
   const dayOfWeek = dayjs(trainingDate).format('dddd');
 
   let trainingLogs = props.stateItem;
@@ -107,7 +107,9 @@ const TrainingDetail = (props: Obj) => {
                 format='YYYY/MM/DD'
                 // valueはdayjsの結果が格納されている
                 onChange={(value) => {
-                  let data = dayjs(value[`$d`]).format('YYYY/MM/DD');
+                  // 入力時点を基準に過去日でも時分秒の設定ができるようにしたい
+                  // おそらく無くても一連の流れに影響はないはず。あれば検討する。
+                  let data = dayjs(value[`$d`]).format('YYYY/MM/DD HH:mm:ss');
                   setSelectTrainingDate(data);
                   }
                 }
