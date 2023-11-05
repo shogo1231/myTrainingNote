@@ -48,21 +48,14 @@ module.exports = {
       directory: path.join(__dirname, 'dist'),
       publicPath: '/',
     },
-    port: 4000,
-    host: '133.130.91.178',
-    allowedHosts: ['gosho-techplay.com'],
-    client: {
-      webSocketURL: 'wss://0.0.0.0/ws',
-      webSocketTransport: 'ws',
-      progress: true,
-    },
     // react-router-domで画面遷移する際の404エラー対策
     // この設定について詳細確認が必要
     historyApiFallback: true,
+    port: 3000,
     // 「ドメイン名/api」のパスをバックエンドサーバーへ転送する設定
     proxy: {
       '/api': {
-        target: 'http://133.130.91.178:8001'
+        target: 'http://localhost:8001'
       }
     },
   },
