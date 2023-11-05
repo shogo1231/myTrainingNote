@@ -29,7 +29,7 @@ export async function getTrainingLogData (_targetDate:any) {
       LEFT JOIN trainingEvents AS event
         ON log.event_code = event.trainingEvents_code
       LEFT JOIN bodyParts AS body
-        ON log.body_code = body.bodyParts_code
+        ON log.bodyParts_code = body.bodyParts_code
       where execute_date like ?;`
     let param = [targetDate];
 
@@ -71,9 +71,9 @@ export async function getTrainingLogDetail (queryParam: queryParam) {
       LEFT JOIN trainingEvents AS event
         ON log.event_code = event.trainingEvents_code
       LEFT JOIN bodyParts AS body
-        ON log.body_code = body.bodyParts_code
+        ON log.bodyParts_code = body.bodyParts_code
       where log.execute_date like ?
-        AND log.body_code = ?
+        AND log.bodyParts_code = ?
         AND log.event_code = ?;`
     const param = [searchDate, Number(queryParam.bodyCode), Number(queryParam.eventCode)];
     const rows = await connection.execute(query, param);
@@ -247,14 +247,13 @@ export async function deleteTrainingLogs (sendData: Obj) {
   const connection = await dbSetting();
 
   // 日付取得(datetime型)
-  // 同じ日にちに同じ種目を２つ登録できない仕様なので年月日のみでよい
-  const targetDate = dayjs(new Date(sendData.date)).format('YYYY-MM-DD');
+  const targetDate = dayjs(new Date(sendData.date)).format('YYYY-MM-DD HH:mm:ss');
 
   // データ削除クエリ
   const query = `
-    DELETE FROM trainingLogs 
-    WHERE execute_date LIKE "${targetDate}%"
-      AND body_code = "${sendData.bodyCode}"
+    DELETE FROM trainingLogs
+    WHERE execute_date = "${targetDate}"
+      AND bodyParts_code = "${sendData.bodyCode}"
       AND event_code = "${sendData.eventCode}"
     LIMIT 1`;
 
@@ -270,8 +269,6 @@ export async function registerTrainingEvent (sendData: Obj) {
   // DB接続
   const connection = await dbSetting();
 
-  // 登録データ整形
-  const shapingData = [sendData.trainingEventName, sendData.bodyPartsCode];
 
   // テーブルのカラム名を取得
   const getColumnNameQuery = 'DESCRIBE trainingEvents';
@@ -297,11 +294,21 @@ export async function registerTrainingEvent (sendData: Obj) {
   // VALUES以降のクエリ部分を作成
   const questions = `(${'?,'.repeat(loopCount).slice(0, -1)})`;
 
+  // 種目コードを生成
+  let getEventDataQuery = `
+    SELECT count(*) as 総数
+    FROM trainingEvents`;
+  const rows = await connection.execute(getEventDataQuery);
+  let result: any = rows[0];
+  let trainingEvents_code = result[0].総数 + 1;
+
+  // 登録データ作成
+  const registerData = [sendData.bodyPartsCode, trainingEvents_code, sendData.trainingEventName];
+
   // データ更新クエリ
   const query = `insert into trainingEvents ${columns} VALUES ${questions}`;
-
   // データ更新
-  await connection.execute(query, shapingData);
+  await connection.execute(query, registerData);
 }
 
 /**

@@ -62,7 +62,9 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        fetch(URL)
+        fetch(URL, {
+          // この中でmethod: 'POST'や、headers: {Authorization: ほにゃほにゃ}の指定ができる
+        })
         .then(res => res.json())
         .then(result => {
           setBodyPartsData(result);
