@@ -1,4 +1,6 @@
 const path = require('path');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 module.exports = {
   mode: 'development',
@@ -7,7 +9,51 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     publicPath: '/training',
     filename: 'bundle.js',
+    // assetModuleFilename: 'assets/[hash][ext][query]'
   },
+  // favicon用に追加検証
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "index.html"),
+      // filename: path.join(__dirname, "dist", "index.html"),
+      // ビルドしたjsファイルを読み込む場所。デフォルトはhead
+      inject: "body",
+      // alwaysWriteToDisk: true,
+    }),
+    new FaviconsWebpackPlugin({
+      logo: path.resolve(__dirname, "src/favicon.ico"),
+      mode: "webapp",
+      devMode: "webapp",
+      prefix: "./",
+      inject: true,
+      // 媒体ごとに調整できるよう将来的に設定したい。
+      // 現状はwindowsのwebブラウザ（chrome,edge)でOK
+      // favicons: {
+      //   icons: {
+      //     android: [
+      //       "android-chrome-192x192.png",
+      //       "android-chrome-512x512.png",
+      //     ],
+      //     appleIcon: [
+      //       "apple-touch-icon-180x180.png",
+      //     ],
+      //     appleStartup: false,
+      //     favicons: [
+      //       "favicon-16x16.png",
+      //       "favicon-32x32.png",
+      //       "favicon-48x48.png",
+      //       "favicon.ico",
+      //     ],
+      //     windows: [
+      //       "mstile-150x150.png",
+      //     ],
+      //     yandex: false,
+      //   }
+      // },
+    }),
+  ],
+  // ここまで
+
   module: {
     rules: [
       /* TypeScriptのモジュール */
@@ -41,11 +87,19 @@ module.exports = {
           },
         ]
       },
+      /* png,jpg,gif,svgのモジュール */
+      {
+        test: /\.(png|jpg|gif|svg|ico)/,
+        //ローダの処理対象となるディレクトリ
+        include: path.resolve(__dirname, 'src/images'),
+        //利用するローダー
+        type: 'asset/inline',
+    }
     ],
   },
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, 'src'),
       publicPath: '/',
     },
     // react-router-domで画面遷移する際の404エラー対策
