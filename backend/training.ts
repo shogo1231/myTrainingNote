@@ -269,7 +269,6 @@ export async function registerTrainingEvent (sendData: Obj) {
   // DB接続
   const connection = await dbSetting();
 
-
   // テーブルのカラム名を取得
   const getColumnNameQuery = 'DESCRIBE trainingEvents';
   const getColumnName = await connection.execute(getColumnNameQuery);
@@ -296,8 +295,8 @@ export async function registerTrainingEvent (sendData: Obj) {
 
   // 種目コードを生成
   let getEventDataQuery = `
-    SELECT count(*) as 総数
-    FROM trainingEvents`;
+  SELECT count(*) as "総数"
+  FROM trainingEvents`;
   const rows = await connection.execute(getEventDataQuery);
   let result: any = rows[0];
   let trainingEvents_code = result[0].総数 + 1;
