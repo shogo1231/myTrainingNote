@@ -6,7 +6,7 @@ module.exports = {
   mode: 'development',
   entry: './src/index.tsx',
   output: {
-    path: path.join(__dirname, './dist/training'),
+    path: path.join(__dirname, './training'),
     publicPath: '/training',
     filename: 'bundle.js',
     // assetModuleFilename: 'assets/[hash][ext][query]'

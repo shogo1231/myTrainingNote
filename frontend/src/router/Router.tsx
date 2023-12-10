@@ -21,7 +21,8 @@ const Router = () => {
         <Route path="/training/addEvent/:id" element={<AddTrainingEventDetail />} />
         <Route path="/training/editEvent" element={<EditEvent />} />
         <Route path="/training/menuSetting" element={<MenuSetting />} />
-        <Route path="*" element={ <p>There's nothing here!</p> } />
+        <Route path="*" element={<Top />} />
+        {/* <Route path="*" element={ <p>There's nothing here!</p> } /> */}
       </Routes>
     </BrowserRouter>
   )
