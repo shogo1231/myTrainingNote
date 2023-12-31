@@ -8,7 +8,7 @@ BIG3の１RMを自動計算できる<br>
 ## 使用技術
 フロントエンド：React(CRAは使わない),Typescript<br>
 バックエンド：Node.js<br>
-DB：mySQL（conoha VPS使用）<br>
+DB：mySQL（PlanetScale使用）<br>
 ~~webサーバ：NginX（conoha VPS使用）<br>~~
 webサーバ：NginX（Rasberry Pi Model B使用）<br>
 
